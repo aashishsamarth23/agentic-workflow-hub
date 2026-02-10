@@ -24,6 +24,11 @@ interface ProjectState {
   setAgentSteps: (steps: AgentStep[]) => void;
   updateAgentStep: (id: string, updates: Partial<AgentStep>) => void;
 
+  // --- ADD THESE 2 LINES ---
+  baSummary: string;
+  setBaSummary: (summary: string) => void;
+  // -------------------------
+
   tickets: Ticket[];
   setTickets: (tickets: Ticket[]) => void;
   updateTicket: (id: string, updates: Partial<Ticket>) => void;
@@ -35,7 +40,11 @@ interface ProjectState {
   currentPhase: Phase;
   setCurrentPhase: (phase: Phase) => void;
 
+  sessionId: string | null;
+  setSessionId: (id: string) => void;
+
   reset: () => void;
+  
 }
 
 export const useProjectStore = create<ProjectState>((set) => ({
@@ -63,6 +72,11 @@ export const useProjectStore = create<ProjectState>((set) => ({
       agentSteps: s.agentSteps.map((step) => (step.id === id ? { ...step, ...updates } : step)),
     })),
 
+  // --- ADD THIS IMPLEMENTATION ---
+  baSummary: '',
+  setBaSummary: (summary) => set({ baSummary: summary }),
+  // -------------------------------
+  
   tickets: [],
   setTickets: (tickets) => set({ tickets }),
   updateTicket: (id, updates) =>
@@ -82,13 +96,16 @@ export const useProjectStore = create<ProjectState>((set) => ({
 
   currentPhase: 'initiation',
   setCurrentPhase: (phase) => set({ currentPhase: phase }),
-
+  sessionId: null,
+  setSessionId: (id) => set({ sessionId: id }),
   reset: () =>
     set({
       projectBrief: '',
       uploadedFiles: [],
       teamMembers: defaultTeam,
       agentSteps: [],
+      // Reset summary too
+      baSummary: '', 
       tickets: [],
       comments: {},
       currentPhase: 'initiation',
